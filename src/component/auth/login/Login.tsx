@@ -1,14 +1,27 @@
 import React from 'react';
 import { Form, Input, Button, Typography } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 
 import styles from './Login.module.scss';
+import { network } from '../../../network/network';
+import { storage } from '../../../local-storage/local-storage';
 
 const { Title } = Typography;
 
 const Login = () => {
+  const navigate = useNavigate();
   const onLoginClick = (values: any) => {
-    console.log(values);
+    network
+      .post('/auth/login', { ...values })
+      .then((res) => {
+        storage.setAccessToken(res.data.data.access_token);
+        storage.setRefreshToken(res.data.data.refresh_token);
+        navigate('/product-list');
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
