@@ -2,9 +2,13 @@ import React, { useEffect, useState } from 'react';
 import Button from 'antd/lib/button';
 import Table from 'antd/lib/table';
 import Space from 'antd/lib/space';
+import Typography from 'antd/lib/typography';
+import Menu from 'antd/lib/menu';
 import { network } from '../../network/network';
 
 import styles from './ProductList.module.scss';
+
+const { Title } = Typography;
 
 const columns = [
   {
@@ -68,12 +72,33 @@ const ProductList = () => {
   }, []);
 
   return (
-    <Table
-      rowClassName={(_, index) => (index % 2 ? styles.grayish : '')}
-      columns={columns}
-      dataSource={products}
-      loading={products === undefined || products.length === 0}
-    />
+    <div className={styles.parentContainer}>
+      <div className={styles.leftPanel}>
+        <Title level={2}>Curious Biker</Title>
+        <Menu defaultSelectedKeys={['product-list']}>
+          <Menu.Item key="product-list" defaultChecked>
+            ahsdkjas
+          </Menu.Item>
+        </Menu>
+      </div>
+      <div className={styles.rightPanel}>
+        <div className={styles.tablePanel}>
+          <div className={styles.parentContainer}>
+            <Title level={2}>Products</Title>
+            <div className={styles.flex1} />
+            <Button type="primary">Add new</Button>
+          </div>
+        </div>
+        <Table
+          pagination={{ defaultPageSize: 5 }}
+          rowClassName={(_, index) => (index % 2 ? styles.grayish : '')}
+          columns={columns}
+          dataSource={products}
+          loading={products === undefined || products.length === 0}
+          rowKey="id"
+        />
+      </div>
+    </div>
   );
 };
 
