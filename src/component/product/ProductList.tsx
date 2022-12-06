@@ -71,6 +71,7 @@ const ProductList = () => {
       rowClassName={(_, index) => (index % 2 ? styles.grayish : '')}
       columns={columns}
       dataSource={products}
+      loading={products === undefined || products.length === 0}
     />
   );
 };
