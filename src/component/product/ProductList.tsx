@@ -47,6 +47,7 @@ const columns = [
     key: 'actions',
     render: () => (
       <Space align="center">
+        {/* @ts-ignore */}
         <Button type="danger">Delete</Button>
         <Button type="primary">Edit</Button>
       </Space>

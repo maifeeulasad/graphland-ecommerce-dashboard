@@ -15,7 +15,7 @@ const CustomHeader = () => {
       onBack={() => navigate(-1)}
       extra={
         <>
-          <Link to="/page2">Page 2</Link>
+          <Link to="/product-list">Product List</Link>
           <Link to="/page3">Page 3</Link>
         </>
   }

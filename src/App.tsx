@@ -26,7 +26,7 @@ const RequireAuth = () => {
 };
 
 const App = () => (
-  <BrowserRouter basename="/react-pipeline">
+  <BrowserRouter basename="/graphland-ecommerce-dashboard">
     <CustomLayout>
       <Routes>
         <Route path="/landing" element={<Landing />} />
