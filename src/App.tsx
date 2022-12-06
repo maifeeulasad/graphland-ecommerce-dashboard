@@ -4,23 +4,40 @@ import {
   Routes,
   Route,
   Navigate,
+  Outlet,
 } from 'react-router-dom';
 
 import { CustomLayout } from './layout/CustomLayout';
 import { Landing } from './component/landing/Landing';
 import { Page2 } from './component/Page2';
 import { Page3 } from './component/Page3';
+import { Login } from './component/auth/login/Login';
+
+const DEFAULT_ROUTE = '/login';
+
+const RequireAuth = () => {
+  const isLoggedIn = true;
+
+  if (!isLoggedIn) {
+    return <Navigate to={DEFAULT_ROUTE} />;
+  }
+
+  return <Outlet />;
+};
 
 const App = () => (
   <BrowserRouter basename="/react-pipeline">
     <CustomLayout>
       <Routes>
         <Route path="/landing" element={<Landing />} />
-        <Route path="/page2" element={<Page2 />} />
-        <Route path="/page3" element={<Page3 />} />
+        <Route path="/login" element={<Login />} />
+        <Route element={<RequireAuth />}>
+          <Route path="/page2" element={<Page2 />} />
+          <Route path="/page3" element={<Page3 />} />
+        </Route>
         <Route
           path="*"
-          element={<Navigate to="/landing" replace />}
+          element={<Navigate to={DEFAULT_ROUTE} replace />}
         />
       </Routes>
     </CustomLayout>
