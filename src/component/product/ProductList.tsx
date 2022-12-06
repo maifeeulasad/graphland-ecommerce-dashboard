@@ -77,7 +77,7 @@ const ProductList = () => {
         <Title level={2}>Curious Biker</Title>
         <Menu defaultSelectedKeys={['product-list']}>
           <Menu.Item key="product-list" defaultChecked>
-            ahsdkjas
+            Products
           </Menu.Item>
         </Menu>
       </div>
@@ -86,7 +86,7 @@ const ProductList = () => {
           <div className={styles.parentContainer}>
             <Title level={2}>Products</Title>
             <div className={styles.flex1} />
-            <Button type="primary">Add new</Button>
+            <Button className={styles.addNewButton} type="primary">Add new</Button>
           </div>
         </div>
         <Table

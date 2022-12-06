@@ -3,6 +3,9 @@ import Layout from 'antd/lib/layout';
 import PageHeader from 'antd/lib/page-header';
 import { Link, useNavigate } from 'react-router-dom';
 
+import 'overlayscrollbars/overlayscrollbars.css';
+import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
+
 const { Header, Content, Footer } = Layout;
 
 const CustomHeader = () => {
@@ -18,19 +21,17 @@ const CustomHeader = () => {
           <Link to="/product-list">Product List</Link>
           <Link to="/page3">Page 3</Link>
         </>
-  }
+      }
     />
   );
 };
 
 const CustomFooter = () => (
-  <div className="text-center">
-    &copy; Maifee Ul Asad
-  </div>
+  <div className="text-center">&copy; Maifee Ul Asad</div>
 );
 
 interface ILayoutProps {
-  children: any
+  children: any;
 }
 
 // eslint-disable-next-line react/prefer-stateless-function
@@ -39,17 +40,21 @@ class CustomLayout extends React.Component<ILayoutProps> {
     const { children } = this.props;
 
     return (
-      <Layout style={{ minHeight: '100vh' }}>
-        <Header style={{ backgroundColor: 'white' }}>
-          <CustomHeader />
-        </Header>
-        <Content>
-          {children}
-        </Content>
-        <Footer style={{ backgroundColor: 'white' }}>
-          <CustomFooter />
-        </Footer>
-      </Layout>
+      <OverlayScrollbarsComponent
+        element="span"
+        options={{ scrollbars: { autoHide: 'scroll' } }}
+        defer
+      >
+        <Layout style={{ minHeight: '100vh' }}>
+          <Header style={{ backgroundColor: 'white' }}>
+            <CustomHeader />
+          </Header>
+          <Content>{children}</Content>
+          <Footer style={{ backgroundColor: 'white' }}>
+            <CustomFooter />
+          </Footer>
+        </Layout>
+      </OverlayScrollbarsComponent>
     );
   }
 }
