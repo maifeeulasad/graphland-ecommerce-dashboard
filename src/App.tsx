@@ -12,14 +12,24 @@ import { Login } from './component/auth/login/Login';
 import { ProductList } from './component/product/ProductList';
 import { storage } from './local-storage/local-storage';
 
-const DEFAULT_ROUTE = '/login';
+const UNAUTHENTICATED_DEFAULT_ROUTE = '/login';
+const AUTHENTICATED_DEFAULT_ROUTE = '/product-list';
+const DEFAULT_ROUTE = UNAUTHENTICATED_DEFAULT_ROUTE;
 
-const RequireAuth = () => {
+interface IRequireAuth {
+  requireLogin?: boolean
+}
+
+const RequireAuth = ({ requireLogin }: IRequireAuth) => {
   // eslint-disable-next-line max-len
   const isLoggedIn = useMemo(() => storage.getAccessToken() !== undefined && storage.getRefreshToken() !== undefined, []);
 
-  if (!isLoggedIn) {
-    return <Navigate to={DEFAULT_ROUTE} />;
+  if (requireLogin && !isLoggedIn) {
+    return <Navigate to={UNAUTHENTICATED_DEFAULT_ROUTE} />;
+  }
+
+  if (!requireLogin && isLoggedIn) {
+    return <Navigate to={AUTHENTICATED_DEFAULT_ROUTE} />;
   }
 
   return <Outlet />;
@@ -29,8 +39,10 @@ const App = () => (
   <BrowserRouter basename="/graphland-ecommerce-dashboard">
     <CustomLayout>
       <Routes>
-        <Route path="/login" element={<Login />} />
         <Route element={<RequireAuth />}>
+          <Route path="/login" element={<Login />} />
+        </Route>
+        <Route element={<RequireAuth requireLogin />}>
           <Route path="/product-list" element={<ProductList />} />
         </Route>
         <Route
