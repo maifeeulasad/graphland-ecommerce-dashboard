@@ -4,73 +4,86 @@ import Table from 'antd/lib/table';
 import Space from 'antd/lib/space';
 import Typography from 'antd/lib/typography';
 import Menu from 'antd/lib/menu';
-import { network } from '../../network/network';
+import Popconfirm from 'antd/lib/popconfirm';
+import { network, networkWithAuth } from '../../network/network';
 
 import styles from './ProductList.module.scss';
 
 const { Title } = Typography;
 
-const columns = [
-  {
-    title: 'ID',
-    dataIndex: 'id',
-    key: 'id',
-    width: '20%',
-  },
-  {
-    title: 'Title',
-    dataIndex: 'title',
-    key: 'title',
-    width: '20%',
-  },
-  {
-    title: 'Price',
-    dataIndex: 'price',
-    key: 'price',
-    width: '20%',
-  },
-  {
-    title: 'Image',
-    dataIndex: 'cover_image',
-    key: 'image',
-    width: '20%',
-    render: (_: any, record: any) => (
-      // eslint-disable-next-line jsx-a11y/img-redundant-alt
-      <img
-        loading="lazy"
-        src={
-          record.cover_image ?
-            `http://104.251.211.125:8055/assets/${record.cover_image}?width=80` :
-            'http://104.251.211.125:8055/assets/58d3581a-b889-408c-9d5e-102fb79b570f?width=80'
-        }
-        alt="Image cover"
-      />
-    ),
-  },
-  {
-    title: 'Actions',
-    key: 'actions',
-    render: () => (
-      <Space align="center">
-        {/* @ts-ignore */}
-        <Button type="danger">Delete</Button>
-        <Button type="primary">Edit</Button>
-      </Space>
-    ),
-    width: '20%',
-  },
-];
-
 const ProductList = () => {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const fetchProductList = () => {
-    network.get('/items/products').then((res) => setProducts(res.data.data));
+    setLoading(true);
+    network.get('/items/products').then((res) => { setProducts(res.data.data); setLoading(false); });
   };
 
   useEffect(() => {
     fetchProductList();
   }, []);
+
+  const columns = [
+    {
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
+      width: '20%',
+    },
+    {
+      title: 'Title',
+      dataIndex: 'title',
+      key: 'title',
+      width: '20%',
+    },
+    {
+      title: 'Price',
+      dataIndex: 'price',
+      key: 'price',
+      width: '20%',
+    },
+    {
+      title: 'Image',
+      dataIndex: 'cover_image',
+      key: 'image',
+      width: '20%',
+      render: (_: any, record: any) => (
+      // eslint-disable-next-line jsx-a11y/img-redundant-alt
+        <img
+          loading="lazy"
+          src={
+          record.cover_image ?
+            `http://104.251.211.125:8055/assets/${record.cover_image}?width=80` :
+            'http://104.251.211.125:8055/assets/58d3581a-b889-408c-9d5e-102fb79b570f?width=80'
+        }
+          alt="Image cover"
+        />
+      ),
+    },
+    {
+      title: 'Actions',
+      key: 'actions',
+      render: (_:any, record: any) => (
+        <Space align="center">
+          <Popconfirm
+            title="Are you sure to delete this product?"
+            onConfirm={() => {
+              networkWithAuth.delete(`/items/products/${record.id}`).then(() => fetchProductList());
+            }}
+            okText="Yes"
+            cancelText="No"
+          >
+            {/* @ts-ignore */}
+            <Button type="danger">Delete</Button>
+          </Popconfirm>
+
+          <Button type="primary">Edit</Button>
+        </Space>
+      ),
+      width: '20%',
+    },
+  ];
 
   return (
     <div className={styles.parentContainer}>
@@ -95,7 +108,7 @@ const ProductList = () => {
           rowClassName={(_, index) => (index % 2 ? styles.grayish : '')}
           columns={columns}
           dataSource={products}
-          loading={products === undefined || products.length === 0}
+          loading={loading}
           rowKey="id"
         />
       </div>

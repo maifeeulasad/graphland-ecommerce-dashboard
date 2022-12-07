@@ -5,6 +5,8 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 import 'overlayscrollbars/overlayscrollbars.css';
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
+import { Button } from 'antd';
+import { storage } from '../local-storage/local-storage';
 
 const { Header, Content, Footer } = Layout;
 
@@ -12,7 +14,16 @@ const CustomHeader = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const isLoginPage = useMemo(() => location.pathname.includes('/login'), [location]);
+  const isLoginPage = useMemo(
+    () => location.pathname.includes('/login'),
+    [location],
+  );
+
+  const logout = () => {
+    storage.clearAccessToken();
+    storage.clearRefreshToken();
+    navigate('/login');
+  };
 
   return (
     <PageHeader
@@ -21,7 +32,20 @@ const CustomHeader = () => {
       subTitle="Graphland Ecommerce Dashboard"
       onBack={!isLoginPage ? () => navigate(-1) : undefined}
       extra={
-        isLoginPage ? <div /> : <Link to="/product-list">Product List</Link>
+        isLoginPage ? (
+          <div />
+        ) : (
+          <>
+            <Link to="/product-list">Product List</Link>
+            <Button
+              onClick={() => {
+                logout();
+              }}
+            >
+              Logout
+            </Button>
+          </>
+        )
       }
     />
   );
