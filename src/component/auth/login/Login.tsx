@@ -1,5 +1,5 @@
-import React from 'react';
-import { Form, Input, Button, Typography } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Form, Input, Button, Typography, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,22 +10,30 @@ import { storage } from '../../../local-storage/local-storage';
 const { Title } = Typography;
 
 const Login = () => {
+  const [messageApi, messageContextHolder] = message.useMessage();
   const navigate = useNavigate();
+  const [processing, setProcessing] = useState(false);
+
   const onLoginClick = (values: any) => {
+    setProcessing(true);
     network
       .post('/auth/login', { ...values })
       .then((res) => {
+        messageApi.success('Login success');
         storage.setAccessToken(res.data.data.access_token);
         storage.setRefreshToken(res.data.data.refresh_token);
         navigate('/product-list');
+        setProcessing(false);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
+        messageApi.error('Login failed');
+        setProcessing(false);
       });
   };
 
   return (
     <div className={styles.center}>
+      {messageContextHolder}
       <Title level={2}>Login</Title>
       <Form
         name="login"
@@ -62,7 +70,12 @@ const Login = () => {
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
+          <Button
+            loading={processing}
+            type="primary"
+            htmlType="submit"
+            style={{ width: '100%' }}
+          >
             Log in
           </Button>
         </Form.Item>

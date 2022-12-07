@@ -8,7 +8,6 @@ import {
 } from 'react-router-dom';
 
 import { CustomLayout } from './layout/CustomLayout';
-import { Landing } from './component/landing/Landing';
 import { Page3 } from './component/Page3';
 import { Login } from './component/auth/login/Login';
 import { ProductList } from './component/product/ProductList';
@@ -29,7 +28,6 @@ const App = () => (
   <BrowserRouter basename="/graphland-ecommerce-dashboard">
     <CustomLayout>
       <Routes>
-        <Route path="/landing" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route element={<RequireAuth />}>
           <Route path="/product-list" element={<ProductList />} />
