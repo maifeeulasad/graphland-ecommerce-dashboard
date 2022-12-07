@@ -37,9 +37,10 @@ const columns = [
     render: (_: any, record: any) => (
       // eslint-disable-next-line jsx-a11y/img-redundant-alt
       <img
+        loading="lazy"
         src={
-          record.cover_photo ?
-            `http://104.251.211.125:8055/assets/${record.cover_photo}?width=80` :
+          record.cover_image ?
+            `http://104.251.211.125:8055/assets/${record.cover_image}?width=80` :
             'http://104.251.211.125:8055/assets/58d3581a-b889-408c-9d5e-102fb79b570f?width=80'
         }
         alt="Image cover"
