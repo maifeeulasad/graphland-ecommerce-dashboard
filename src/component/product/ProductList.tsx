@@ -14,10 +14,14 @@ const { Title } = Typography;
 const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const fetchProductList = () => {
     setLoading(true);
-    network.get('/items/products').then((res) => { setProducts(res.data.data); setLoading(false); });
+    network.get('/items/products').then((res) => {
+      setProducts(res.data.data);
+      setLoading(false);
+    });
   };
 
   useEffect(() => {
@@ -49,14 +53,14 @@ const ProductList = () => {
       key: 'image',
       width: '20%',
       render: (_: any, record: any) => (
-      // eslint-disable-next-line jsx-a11y/img-redundant-alt
+        // eslint-disable-next-line jsx-a11y/img-redundant-alt
         <img
           loading="lazy"
           src={
-          record.cover_image ?
-            `http://104.251.211.125:8055/assets/${record.cover_image}?width=80` :
-            'http://104.251.211.125:8055/assets/58d3581a-b889-408c-9d5e-102fb79b570f?width=80'
-        }
+            record.cover_image ?
+              `http://104.251.211.125:8055/assets/${record.cover_image}?width=80` :
+              'http://104.251.211.125:8055/assets/58d3581a-b889-408c-9d5e-102fb79b570f?width=80'
+          }
           alt="Image cover"
         />
       ),
@@ -64,15 +68,22 @@ const ProductList = () => {
     {
       title: 'Actions',
       key: 'actions',
-      render: (_:any, record: any) => (
+      render: (_: any, record: any) => (
         <Space align="center">
           <Popconfirm
             title="Are you sure to delete this product?"
             onConfirm={() => {
-              networkWithAuth.delete(`/items/products/${record.id}`).then(() => fetchProductList());
+              setDeleting(true);
+              networkWithAuth
+                .delete(`/items/products/${record.id}`)
+                .then(() => {
+                  setDeleting(false);
+                  fetchProductList();
+                });
             }}
             okText="Yes"
             cancelText="No"
+            okButtonProps={{ loading: deleting }}
           >
             {/* @ts-ignore */}
             <Button type="danger">Delete</Button>
@@ -100,7 +111,9 @@ const ProductList = () => {
           <div className={styles.parentContainer}>
             <Title level={2}>Products</Title>
             <div className={styles.flex1} />
-            <Button className={styles.addNewButton} type="primary">Add new</Button>
+            <Button className={styles.addNewButton} type="primary">
+              Add new
+            </Button>
           </div>
         </div>
         <Table
