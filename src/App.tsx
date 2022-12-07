@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   BrowserRouter,
   Routes,
@@ -8,14 +8,15 @@ import {
 } from 'react-router-dom';
 
 import { CustomLayout } from './layout/CustomLayout';
-import { Page3 } from './component/Page3';
 import { Login } from './component/auth/login/Login';
 import { ProductList } from './component/product/ProductList';
+import { storage } from './local-storage/local-storage';
 
 const DEFAULT_ROUTE = '/login';
 
 const RequireAuth = () => {
-  const isLoggedIn = true;
+  // eslint-disable-next-line max-len
+  const isLoggedIn = useMemo(() => storage.getAccessToken() !== undefined && storage.getRefreshToken() !== undefined, []);
 
   if (!isLoggedIn) {
     return <Navigate to={DEFAULT_ROUTE} />;
@@ -31,7 +32,6 @@ const App = () => (
         <Route path="/login" element={<Login />} />
         <Route element={<RequireAuth />}>
           <Route path="/product-list" element={<ProductList />} />
-          <Route path="/page3" element={<Page3 />} />
         </Route>
         <Route
           path="*"
