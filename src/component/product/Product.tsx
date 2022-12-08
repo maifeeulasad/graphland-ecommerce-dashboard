@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Input, InputNumber, Button, Typography, Menu, Row, Col, Upload } from 'antd';
+import { Input, InputNumber, Button, Typography, Menu, Row, Col, Upload, message } from 'antd';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import Form from 'antd/lib/form';
 import type { UploadFile } from 'antd/es/upload/interface';
@@ -65,6 +65,7 @@ const Product = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { state } = useLocation();
+  const [messageApi, messageContextHolder] = message.useMessage();
 
   const isNewProductPage = useMemo(() => id === undefined, []);
 
@@ -76,11 +77,17 @@ const Product = () => {
   const onProductSave = (values: any) => {
     if (isNewProductPage) {
       networkWithAuth.post('/items/products', values).then(() => {
+        messageApi.success('Product created succussfully');
         navigate('/product-list');
+      }).catch(() => {
+        messageApi.error('Product created failed');
       });
     } else {
       networkWithAuth.post(`/items/products/${id}`, values).then(() => {
+        messageApi.success('Product updated succussfully');
         navigate('/product-list');
+      }).catch(() => {
+        messageApi.error('Product updation failed');
       });
     }
   };
@@ -89,6 +96,7 @@ const Product = () => {
 
   return (
     <div className={styles.parentContainer}>
+      {messageContextHolder}
       <div className={styles.leftPanel}>
         <Title level={2}>Curious Biker</Title>
         <Menu defaultSelectedKeys={['product-list']}>
