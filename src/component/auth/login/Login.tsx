@@ -11,7 +11,6 @@ const { Title } = Typography;
 
 const Login = () => {
   const [messageApi, messageContextHolder] = message.useMessage();
-  const navigate = useNavigate();
   const [processing, setProcessing] = useState(false);
 
   const onLoginClick = (values: any) => {
@@ -22,7 +21,7 @@ const Login = () => {
         messageApi.success('Login success');
         storage.setAccessToken(res.data.data.access_token);
         storage.setRefreshToken(res.data.data.refresh_token);
-        navigate('/product-list');
+        window.location.reload();
         setProcessing(false);
       })
       .catch(() => {

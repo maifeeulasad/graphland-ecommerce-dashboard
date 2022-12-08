@@ -22,7 +22,7 @@ const CustomHeader = () => {
   const logout = () => {
     storage.clearAccessToken();
     storage.clearRefreshToken();
-    navigate('/login');
+    window.location.reload();
   };
 
   return (
@@ -37,10 +37,11 @@ const CustomHeader = () => {
         ) : (
           <>
             <Link to="/product-list">Product List</Link>
+            <Link to="/product/new">Add Product</Link>
             <Button
-              onClick={() => {
-                logout();
-              }}
+              // @ts-ignore
+              type="danger"
+              onClick={logout}
             >
               Logout
             </Button>
