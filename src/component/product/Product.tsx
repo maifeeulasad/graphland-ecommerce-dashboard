@@ -4,11 +4,27 @@ import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import Form from 'antd/lib/form';
 import type { UploadFile } from 'antd/es/upload/interface';
 import type { UploadProps } from 'antd/es/upload';
-
 import { PlusOutlined } from '@ant-design/icons';
+import { Editor } from '@tinymce/tinymce-react';
 
 import styles from './Product.module.scss';
 import { networkWithAuth } from '../../network/network';
+
+interface IRichInput {
+  value?: string;
+  onChange?: (value?: string) => void
+}
+
+const RichInput = ({ value, onChange }:IRichInput) => {
+  const onEditorChange = (editorValue: string) => { if (onChange) { onChange(editorValue); } };
+  return (
+    <Editor
+      init={{ height: 200 }}
+      value={value}
+      onEditorChange={onEditorChange}
+    />
+  );
+};
 
 interface ICoverImageInput {
   onChange?: (value?: string) => void
@@ -132,12 +148,15 @@ const Product = () => {
                   },
                 ]}
               >
-                <InputNumber placeholder="Price" />
+                <InputNumber placeholder="Price" style={{ width: '100%' }} />
               </Form.Item>
             </Col>
             <Col xs={8}>
-              <Form.Item label="Comparable Price" name="comparable_price">
-                <InputNumber placeholder="Comparable Price" />
+              <Form.Item
+                label="Comparable Price"
+                name="comparable_price"
+              >
+                <InputNumber placeholder="Comparable Price" style={{ width: '100%' }} />
               </Form.Item>
             </Col>
           </Row>
@@ -155,10 +174,10 @@ const Product = () => {
             <CoverImageInput />
           </Form.Item>
           <Form.Item label="Short Description" name="short_description">
-            <Input placeholder="Short Description" />
+            <RichInput />
           </Form.Item>
           <Form.Item label="Description" name="description">
-            <Input placeholder="Description" />
+            <RichInput />
           </Form.Item>
         </Form>
       </div>
