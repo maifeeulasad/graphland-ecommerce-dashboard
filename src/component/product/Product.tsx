@@ -1,10 +1,46 @@
-import React, { useEffect, useMemo } from 'react';
-import { Input, InputNumber, Button, Typography, Menu, Row, Col } from 'antd';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Input, InputNumber, Button, Typography, Menu, Row, Col, Upload } from 'antd';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import Form from 'antd/lib/form';
+import type { UploadFile } from 'antd/es/upload/interface';
+import type { UploadProps } from 'antd/es/upload';
+
+import { PlusOutlined } from '@ant-design/icons';
 
 import styles from './Product.module.scss';
 import { networkWithAuth } from '../../network/network';
+
+interface ICoverImageInput {
+  onChange?: (value?: string) => void
+}
+
+const CoverImageInput = ({ onChange }: ICoverImageInput) => {
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+
+  const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) =>
+    setFileList(newFileList);
+
+  return (
+    <Upload
+      accept="image/*"
+      customRequest={(opt) => {
+        networkWithAuth.postForm('/files', { file: opt.file }).then((res) => {
+          if (onChange) { onChange(res.data.data.id); }
+        });
+      }}
+      listType="picture-card"
+      fileList={fileList}
+      onChange={handleChange}
+      maxCount={1}
+    >
+      {fileList.length >= 1 ? null : (
+        <><PlusOutlined />
+          <div>Upload</div>
+        </>
+      )}
+    </Upload>
+  );
+};
 
 const { Title } = Typography;
 
@@ -23,14 +59,17 @@ const Product = () => {
 
   const onProductSave = (values: any) => {
     if (isNewProductPage) {
-      console.log('');
+      networkWithAuth.post('/items/products', values).then(() => {
+        navigate('/product-list');
+      });
     } else {
       networkWithAuth.post(`/items/products/${id}`, values).then(() => {
         navigate('/product-list');
       });
-      console.log(values);
     }
   };
+
+  const onFormSubmit = () => onProductSave(form.getFieldsValue());
 
   return (
     <div className={styles.parentContainer}>
@@ -43,21 +82,7 @@ const Product = () => {
         </Menu>
       </div>
       <div className={styles.rightPanel}>
-        <div className={styles.tablePanel}>
-          <div className={styles.parentContainer}>
-            <Title level={2}>Products</Title>
-            <div className={styles.flex1} />
-            <Button
-              className={styles.addNewButton}
-              type="primary"
-              onClick={() => {
-                onProductSave(form.getFieldsValue());
-              }}
-            >
-              {isNewProductPage ? 'Save' : 'Update'}
-            </Button>
-          </div>
-        </div>
+
         <Form
           form={form}
           name="product"
@@ -65,7 +90,21 @@ const Product = () => {
           initialValues={{
             remember: true,
           }}
+          onFinish={onFormSubmit}
         >
+          <div className={styles.tablePanel}>
+            <div className={styles.parentContainer}>
+              <Title level={2}>Products</Title>
+              <div className={styles.flex1} />
+              <Button
+                className={styles.addNewButton}
+                type="primary"
+                htmlType="submit"
+              >
+                {isNewProductPage ? 'Save' : 'Update'}
+              </Button>
+            </div>
+          </div>
           <Form.Item name="title" label="Title">
             <Input placeholder="Title" />
           </Form.Item>
@@ -102,6 +141,19 @@ const Product = () => {
               </Form.Item>
             </Col>
           </Row>
+          <Form.Item
+            required
+            label="Cover Image"
+            name="cover_image"
+            rules={[
+              {
+                required: true,
+                message: 'Please add Cover Image!',
+              },
+            ]}
+          >
+            <CoverImageInput />
+          </Form.Item>
           <Form.Item label="Short Description" name="short_description">
             <Input placeholder="Short Description" />
           </Form.Item>
