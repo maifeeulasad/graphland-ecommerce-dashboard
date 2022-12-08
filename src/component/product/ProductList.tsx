@@ -5,6 +5,8 @@ import Space from 'antd/lib/space';
 import Typography from 'antd/lib/typography';
 import Menu from 'antd/lib/menu';
 import Popconfirm from 'antd/lib/popconfirm';
+import { useNavigate } from 'react-router-dom';
+
 import { network, networkWithAuth } from '../../network/network';
 
 import styles from './ProductList.module.scss';
@@ -12,6 +14,7 @@ import styles from './ProductList.module.scss';
 const { Title } = Typography;
 
 const ProductList = () => {
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -88,8 +91,7 @@ const ProductList = () => {
             {/* @ts-ignore */}
             <Button type="danger">Delete</Button>
           </Popconfirm>
-
-          <Button type="primary">Edit</Button>
+          <Button type="primary" onClick={() => { navigate(`/product/${record.id}`, { state: record }); }}>Edit</Button>
         </Space>
       ),
       width: '20%',
@@ -111,7 +113,7 @@ const ProductList = () => {
           <div className={styles.parentContainer}>
             <Title level={2}>Products</Title>
             <div className={styles.flex1} />
-            <Button className={styles.addNewButton} type="primary">
+            <Button className={styles.addNewButton} type="primary" onClick={() => { navigate('/product/new'); }}>
               Add new
             </Button>
           </div>

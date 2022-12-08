@@ -1,0 +1,33 @@
+.grayish {
+    background-color: rgb(0, 0, 0, 0.05);
+  }
+  
+  .parentContainer {
+    display: flex;
+    min-height: 100%;
+  }
+  
+  .leftPanel {
+    width: 20%;
+    margin: 20px;
+    border: 1px solid rgb(0, 0, 0, 0.1);
+    padding: 20px;
+    min-height: 100%;
+  }
+  
+  .rightPanel {
+    flex: 1;
+    margin: 20px;
+  }
+  
+  .tablePanel {
+    margin: 10px;
+  }
+  
+  .flex1 {
+    flex: 1;
+  }
+  
+  .addNewButton{
+    margin: 20px;
+  }

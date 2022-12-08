@@ -11,6 +11,7 @@ import { CustomLayout } from './layout/CustomLayout';
 import { Login } from './component/auth/login/Login';
 import { ProductList } from './component/product/ProductList';
 import { storage } from './local-storage/local-storage';
+import { Product } from './component/product/Product';
 
 const UNAUTHENTICATED_DEFAULT_ROUTE = '/login';
 const AUTHENTICATED_DEFAULT_ROUTE = '/product-list';
@@ -44,6 +45,8 @@ const App = () => (
         </Route>
         <Route element={<RequireAuth requireLogin />}>
           <Route path="/product-list" element={<ProductList />} />
+          <Route path="/product/new" element={<Product />} />
+          <Route path="/product/:id" element={<Product />} />
         </Route>
         <Route
           path="*"
